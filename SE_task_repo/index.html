@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>데이터 분석 대시보드</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    header span {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .kpi-card.blue::before   { background: #3b82f6; }
+    .kpi-card.green::before  { background: #22c55e; }
+    .kpi-card.purple::before { background: #a855f7; }
+    .kpi-card.orange::before { background: #f97316; }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f8fafc;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .kpi-delta {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .kpi-delta.up   { color: #22c55e; }
+    .kpi-delta.down { color: #ef4444; }
+
+    /* Chart Grid */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .chart-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .chart-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 16px;
+    }
+
+    .chart-title small {
+      font-weight: 400;
+      color: #64748b;
+      font-size: 0.75rem;
+      margin-left: 6px;
+    }
+
+    canvas {
+      max-height: 260px;
+    }
+
+    /* Table */
+    .table-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 8px 12px;
+      color: #64748b;
+      font-weight: 500;
+      border-bottom: 1px solid #334155;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #1e293b;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover { background: #263348; }
+
+    tbody td {
+      padding: 10px 12px;
+      color: #cbd5e1;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .badge.high   { background: #052e16; color: #22c55e; }
+    .badge.mid    { background: #1e1b4b; color: #818cf8; }
+    .badge.low    { background: #431407; color: #fb923c; }
+
+    @media (max-width: 768px) {
+      .chart-grid, .chart-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>데이터 분석 대시보드</h1>
+  <span id="dateLabel"></span>
+</header>
+
+<!-- KPI 카드 -->
+<div class="kpi-grid">
+  <div class="kpi-card blue">
+    <div class="kpi-label">총 매출</div>
+    <div class="kpi-value">₩4.2B</div>
+    <div class="kpi-delta up">▲ 12.3% 전월 대비</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">신규 사용자</div>
+    <div class="kpi-value">28,401</div>
+    <div class="kpi-delta up">▲ 8.1% 전월 대비</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-label">전환율</div>
+    <div class="kpi-value">3.68%</div>
+    <div class="kpi-delta down">▼ 0.4% 전월 대비</div>
+  </div>
+  <div class="kpi-card orange">
+    <div class="kpi-label">평균 주문액</div>
+    <div class="kpi-value">₩147K</div>
+    <div class="kpi-delta up">▲ 5.7% 전월 대비</div>
+  </div>
+</div>
+
+<!-- 차트 영역 -->
+<div class="chart-grid">
+  <div class="chart-card">
+    <div class="chart-title">월별 매출 추이 <small>최근 12개월</small></div>
+    <canvas id="lineChart"></canvas>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">채널별 매출 비중</div>
+    <canvas id="doughnutChart"></canvas>
+  </div>
+</div>
+
+<div class="chart-row" style="margin-bottom:16px;">
+  <div class="chart-card">
+    <div class="chart-title">카테고리별 주문량</div>
+    <canvas id="barChart"></canvas>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">일별 신규 사용자 <small>최근 2주</small></div>
+    <canvas id="areaChart"></canvas>
+  </div>
+</div>
+
+<!-- 상위 상품 테이블 -->
+<div class="table-card">
+  <div class="chart-title">상위 상품 분석</div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>상품명</th>
+        <th>카테고리</th>
+        <th>판매량</th>
+        <th>매출액</th>
+        <th>성장률</th>
+        <th>상태</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>프리미엄 이어버드 Pro</td><td>전자기기</td><td>12,450</td><td>₩623M</td><td class="kpi-delta up" style="padding:10px 12px;">▲ 24%</td><td><span class="badge high">고성장</span></td></tr>
+      <tr><td>2</td><td>울트라 슬림 노트북 15</td><td>전자기기</td><td>4,210</td><td>₩1.05B</td><td class="kpi-delta up" style="padding:10px 12px;">▲ 18%</td><td><span class="badge high">고성장</span></td></tr>
+      <tr><td>3</td><td>스마트 홈 스피커 Mini</td><td>스마트홈</td><td>9,870</td><td>₩296M</td><td class="kpi-delta up" style="padding:10px 12px;">▲ 9%</td><td><span class="badge mid">안정</span></td></tr>
+      <tr><td>4</td><td>기계식 키보드 TKL</td><td>주변기기</td><td>6,310</td><td>₩252M</td><td class="kpi-delta down" style="padding:10px 12px;">▼ 3%</td><td><span class="badge low">주의</span></td></tr>
+      <tr><td>5</td><td>4K 모니터 27인치</td><td>모니터</td><td>3,140</td><td>₩408M</td><td class="kpi-delta up" style="padding:10px 12px;">▲ 7%</td><td><span class="badge mid">안정</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.getElementById('dateLabel').textContent =
+    new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' }) + ' 기준';
+
+  const gridColor = 'rgba(51,65,85,0.6)';
+  const textColor = '#94a3b8';
+
+  Chart.defaults.color = textColor;
+  Chart.defaults.borderColor = gridColor;
+
+  // 라인 차트
+  const lineCtx = document.getElementById('lineChart').getContext('2d');
+  const months = ['6월','7월','8월','9월','10월','11월','12월','1월','2월','3월','4월','5월'];
+  new Chart(lineCtx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: '매출 (백만원)',
+          data: [280,320,295,410,380,450,520,490,560,430,610,420],
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.08)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+        },
+        {
+          label: '목표',
+          data: [300,310,320,330,350,370,390,400,420,430,440,450],
+          borderColor: '#475569',
+          borderDash: [5,4],
+          tension: 0.4,
+          fill: false,
+          pointRadius: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { boxWidth: 12, font: { size: 11 } } } },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { font: { size: 11 } } },
+        y: { grid: { color: gridColor }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+
+  // 도넛 차트
+  const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+  new Chart(doughnutCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['온라인 직접', '모바일 앱', '제휴몰', 'SNS 광고', '오프라인'],
+      datasets: [{
+        data: [38, 27, 18, 11, 6],
+        backgroundColor: ['#3b82f6','#22c55e','#a855f7','#f97316','#64748b'],
+        borderWidth: 0,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '62%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { boxWidth: 10, font: { size: 11 }, padding: 12 }
+        }
+      }
+    }
+  });
+
+  // 바 차트
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ['전자기기','스마트홈','주변기기','모니터','웨어러블','액세서리'],
+      datasets: [{
+        label: '주문량',
+        data: [16660, 9870, 8430, 6240, 5120, 3870],
+        backgroundColor: [
+          'rgba(59,130,246,0.75)','rgba(34,197,94,0.75)','rgba(168,85,247,0.75)',
+          'rgba(249,115,22,0.75)','rgba(236,72,153,0.75)','rgba(100,116,139,0.75)'
+        ],
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: { grid: { color: gridColor }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+
+  // 에리어 차트 (신규 사용자)
+  const areaCtx = document.getElementById('areaChart').getContext('2d');
+  const days = ['5/8','5/9','5/10','5/11','5/12','5/13','5/14','5/15','5/16','5/17','5/18','5/19','5/20','5/21'];
+  new Chart(areaCtx, {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [{
+        label: '신규 사용자',
+        data: [1840,2210,1970,2450,2780,1920,1560,2340,2680,2120,2950,3100,2780,3240],
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34,197,94,0.12)',
+        tension: 0.4,
+        fill: true,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        pointBackgroundColor: '#22c55e',
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45 } },
+        y: { grid: { color: gridColor }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+</script>
+</body>
+</html>
