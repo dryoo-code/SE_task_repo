@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent 업무 자동화 프로세스</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Inter:wght@400;600;700;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter','Noto Sans KR',sans-serif;background:#f0f4ff;color:#1a1a2e;min-height:100vh;padding:24px 16px;}
+.page{max-width:1100px;margin:0 auto;}
+
+/* HEADER */
+.header{text-align:center;margin-bottom:24px;}
+.header h1{font-size:clamp(20px,3.5vw,34px);font-weight:900;color:#1a1a2e;letter-spacing:-0.5px;line-height:1.2;}
+.header h1 span{color:#7c3aed;}
+.header .sub{font-size:12px;color:#64748b;margin-top:5px;font-weight:600;letter-spacing:1.5px;}
+.user-note{display:inline-block;background:#fef3c7;border:2px solid #f59e0b;border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;color:#92400e;margin-top:10px;}
+
+/* SECTION LABEL */
+.section-label{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.sl-line{flex:1;height:2px;background:#e2e8f0;}
+.sl-text{font-size:11px;font-weight:900;color:#64748b;letter-spacing:2px;white-space:nowrap;padding:0 8px;}
+
+/* GRID LAYOUTS — desktop */
+.top-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:center;margin-bottom:12px;}
+.bottom-row{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:0;align-items:center;margin-bottom:12px;}
+
+/* ARROW */
+.arr{display:flex;align-items:center;justify-content:center;padding:0 6px;color:#7c3aed;font-size:24px;flex-shrink:0;}
+/* mobile down-arrow shown only on mobile */
+.arr-down{display:none;text-align:center;color:#7c3aed;font-size:20px;margin:2px 0;}
+
+/* CARD */
+.card{background:#fff;border-radius:14px;padding:15px;border:2px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,0.06);height:100%;}
+.card-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:12px;font-weight:900;color:#fff;flex-shrink:0;}
+.card-title{font-size:13px;font-weight:900;line-height:1.3;margin:6px 0 5px;}
+.card-body{font-size:11px;color:#475569;line-height:1.6;}
+.icon-box{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:8px;}
+.auto-badge{display:inline-flex;align-items:center;gap:3px;background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;border:1.5px solid #86efac;margin-left:6px;}
+.user-action{display:flex;align-items:flex-start;gap:5px;background:#eff6ff;border:1.5px solid #3b82f6;border-radius:8px;padding:6px 8px;margin-top:8px;font-size:10px;font-weight:700;color:#1d4ed8;}
+.ua-icon{font-size:13px;flex-shrink:0;}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:12px;white-space:nowrap;}
+
+/* CARD COLOR SCHEMES */
+.c-blue{border-color:#bfdbfe;} .c-blue .card-title{color:#1d4ed8;}
+.c-purple{border-color:#ddd6fe;} .c-purple .card-title{color:#5b21b6;}
+.c-emerald{border-color:#a7f3d0;} .c-emerald .card-title{color:#065f46;}
+.c-orange{border-color:#fed7aa;} .c-orange .card-title{color:#9a3412;}
+.c-pink{border-color:#fbcfe8;} .c-pink .card-title{color:#9d174d;}
+.c-indigo{border-color:#c7d2fe;} .c-indigo .card-title{color:#3730a3;}
+.c-yellow{border-color:#fde68a;} .c-yellow .card-title{color:#92400e;}
+
+/* TAG COLORS */
+.t-blue{background:#eff6ff;color:#1d4ed8;}
+.t-purple{background:#f5f3ff;color:#5b21b6;}
+.t-green{background:#f0fdf4;color:#15803d;}
+.t-orange{background:#fff7ed;color:#9a3412;}
+.t-pink{background:#fdf2f8;color:#9d174d;}
+.t-indigo{background:#eef2ff;color:#3730a3;}
+.t-yellow{background:#fffbeb;color:#92400e;}
+
+/* RESULT GRID */
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;}
+.result-item{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:5px 7px;font-size:10px;font-weight:700;color:#334155;display:flex;align-items:center;gap:4px;}
+.ri{font-size:13px;}
+
+/* NOTIFICATION */
+.notif-strip{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#7c3aed,#db2777);color:#fff;border-radius:12px;padding:12px 18px;margin-bottom:12px;flex-wrap:wrap;}
+.notif-strip .ni{font-size:22px;flex-shrink:0;}
+.notif-strip .nt{font-size:12px;font-weight:700;flex:1;min-width:180px;}
+.notif-strip .nt span{opacity:0.85;font-weight:400;font-size:11px;}
+.ntag{background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.4);font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px;white-space:nowrap;}
+
+/* DOWN ARROW BLOCK */
+.down-block{display:flex;flex-direction:column;align-items:center;margin:4px 0 12px;gap:2px;}
+.down-block .dlabel{font-size:10px;font-weight:700;color:#7c3aed;letter-spacing:1px;}
+.down-block .darr{font-size:26px;color:#7c3aed;line-height:1;}
+
+/* LEGEND */
+.legend{background:#fff;border:2px solid #e2e8f0;border-radius:14px;padding:14px 18px;margin-top:4px;}
+.legend-title{font-size:12px;font-weight:900;color:#1a1a2e;margin-bottom:10px;letter-spacing:1px;}
+.legend-grid{display:flex;flex-wrap:wrap;gap:8px 24px;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#475569;}
+
+/* =====================
+   TABLET (≤900px)
+   ===================== */
+@media(max-width:900px){
+  .top-row{grid-template-columns:1fr auto 1fr;gap:0;}
+  /* STEP 3 wraps below as full-width */
+  .top-row .card:nth-child(5){grid-column:1/-1;margin-top:4px;}
+  .top-row .arr:nth-child(4){display:none;}
+  .bottom-row{grid-template-columns:1fr auto 1fr;gap:0;}
+  .bottom-row .card:nth-child(5),
+  .bottom-row .card:nth-child(7){grid-column:1/-1;margin-top:4px;}
+  .bottom-row .arr:nth-child(4),
+  .bottom-row .arr:nth-child(6){display:none;}
+}
+
+/* =====================
+   MOBILE (≤600px)
+   ===================== */
+@media(max-width:600px){
+  body{padding:16px 12px;}
+  .page{max-width:100%;}
+
+  /* header */
+  .header h1{font-size:22px;}
+  .header .sub{font-size:11px;letter-spacing:0.5px;}
+  .user-note{font-size:11px;padding:6px 12px;text-align:left;display:block;}
+
+  /* section label */
+  .sl-text{font-size:10px;letter-spacing:1px;}
+
+  /* ALL rows → single column */
+  .top-row,
+  .bottom-row{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    margin-bottom:12px;
+  }
+
+  /* hide horizontal arrows, show vertical */
+  .arr{display:none;}
+  .arr-down{display:block;}
+
+  /* cards full width */
+  .card{width:100%;height:auto;border-radius:12px;padding:14px;}
+  .card-title{font-size:14px;}
+  .card-body{font-size:12px;}
+  .icon-box{width:40px;height:40px;font-size:20px;}
+  .auto-badge{font-size:11px;}
+  .user-action{font-size:11px;padding:8px 10px;}
+  .tag{font-size:11px;padding:3px 9px;}
+
+  /* result grid → 2 col on mobile is fine */
+  .result-grid{grid-template-columns:1fr 1fr;}
+  .result-item{font-size:11px;}
+
+  /* notification strip */
+  .notif-strip{flex-direction:column;align-items:flex-start;gap:8px;padding:12px 14px;}
+  .notif-strip .nt{min-width:unset;font-size:12px;}
+
+  /* legend */
+  .legend-grid{flex-direction:column;gap:6px;}
+  .legend-item{font-size:12px;}
+
+  /* page 2 thought grid → single col */
+  .thought-grid{grid-template-columns:1fr !important;}
+
+  /* page 2 hero grid → single col */
+  .hero-grid{grid-template-columns:1fr !important;}
+
+  /* thought 5 grid → single col */
+  .thought5-grid{grid-template-columns:1fr !important;gap:12px !important;}
+
+  /* ai boss flex → column */
+  .ai-boss-flex{flex-direction:column !important;align-items:center !important;}
+  .ai-boss-bubble{border-top-left-radius:12px !important;}
+
+  /* takeaway badges → wrap tighter */
+  .takeaway-badges{justify-content:center !important;}
+  .takeaway-badges > div{min-width:70px;padding:8px 10px !important;}
+
+  /* page break spacing */
+  .page-break{margin:32px 0 0 !important;padding-top:24px !important;}
+}
+
+/* =====================
+   SMALL MOBILE (≤380px)
+   ===================== */
+@media(max-width:380px){
+  .header h1{font-size:19px;}
+  .card-title{font-size:13px;}
+  .card-body{font-size:11px;}
+  .result-grid{grid-template-columns:1fr;}
+  .takeaway-badges > div{width:100% !important;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="sub">AI-POWERED WORKFLOW · END-TO-END AUTOMATION</div>
+  <h1>AI AGENT로 완성하는 <span>영업 인텔리전스</span> 자동화</h1>
+  <div class="user-note">👤 파란 박스 = 사용자가 할 일 &nbsp;|&nbsp; ⚡ AUTO = AI 자동 처리 &nbsp;|&nbsp; 총 사용자 개입: 3회</div>
+</div>
+
+<!-- PHASE 1 -->
+<div class="section-label">
+  <div class="sl-line"></div>
+  <div class="sl-text">📥 PHASE 1 · 데이터 수집 &amp; 분석 &amp; 전략</div>
+  <div class="sl-line"></div>
+</div>
+
+<div class="top-row">
+
+  <!-- STEP 1 -->
+  <div class="card c-blue">
+    <div class="icon-box" style="background:#eff6ff;">📋</div>
+    <div style="display:flex;align-items:center;">
+      <div class="card-num" style="background:#3b82f6;">1</div>
+      <div class="card-title" style="margin:0 0 0 8px;">데이터 수집 요청</div>
+    </div>
+    <div class="card-body" style="margin-top:6px;">
+      AI Agent가 <b>Coda.io 회의록</b>(1~5월)과 <b>Google Workspace 제안서</b>에 자동 접근하여 전체 데이터를 수집합니다.
+    </div>
+    <div class="user-action">
+      <span class="ua-icon">👤</span>
+      <span><b>[사용자 액션 1]</b><br>"1~5월 미팅 분석해줘" 한 마디</span>
+    </div>
+    <div class="tags">
+      <span class="tag t-blue">Cursor Agent</span>
+      <span class="tag t-purple">Claude Cowork</span>
+      <span class="tag t-indigo">Antigravity</span>
+      <span class="tag t-blue">📋 Coda.io</span>
+      <span class="tag t-blue">📁 Google Workspace</span>
+    </div>
+  </div>
+
+  <div class="arr">→</div>
+  <div class="arr-down">↓</div>
+
+  <!-- STEP 2 -->
+  <div class="card c-purple">
+    <div class="icon-box" style="background:#f5f3ff;">🧠</div>
+    <div style="display:flex;align-items:center;">
+      <div class="card-num" style="background:#7c3aed;">2</div>
+      <div class="card-title" style="margin:0 0 0 8px;">LLM 심층 분석</div>
+      <span class="auto-badge">⚡ 자동</span>
+    </div>
+    <div class="card-body" style="margin-top:6px;">
+      수집된 데이터를 <b>고객/산업별 니즈</b>, <b>제품 Fit 여부</b>로 자동 분류·정리합니다.
+    </div>
+    <div class="result-grid">
+      <div class="result-item"><span class="ri">✅</span>제품 Fit 고객</div>
+      <div class="result-item"><span class="ri">❌</span>미스매치 분석</div>
+      <div class="result-item"><span class="ri">🏭</span>산업별 니즈</div>
+      <div class="result-item"><span class="ri">💡</span>핵심 인사이트</div>
+    </div>
+    <div class="tags">
+      <span class="tag t-purple">Claude / GPT-4</span>
+      <span class="tag t-purple">LLM API</span>
+    </div>
+  </div>
+
+  <div class="arr">→</div>
+  <div class="arr-down">↓</div>
+
+  <!-- STEP 3 -->
+  <div class="card c-emerald">
+    <div class="icon-box" style="background:#f0fdf4;">🗺️</div>
+    <div style="display:flex;align-items:center;">
+      <div class="card-num" style="background:#059669;">3</div>
+      <div class="card-title" style="margin:0 0 0 8px;">GTM 전략 수립</div>
+      <span class="auto-badge">⚡ 자동</span>
+    </div>
+    <div class="card-body" style="margin-top:6px;">
+      인사이트 기반으로 <b>하반기 고객 침투 전략</b>을 AI가 자동 수립합니다. 타겟·접근방식·우선순위 제안.
+    </div>
+    <div class="user-action">
+      <span class="ua-icon">👤</span>
+      <span><b>[사용자 액션 2]</b><br>전략 초안 검토 후 승인 또는 피드백</span>
+    </div>
+    <div class="tags">
+      <span class="tag t-green">🎯 타겟 세그먼트</span>
+      <span class="tag t-green">📈 영업 우선순위</span>
+      <span class="tag t-green">🤝 접근 전략</span>
+    </div>
+  </div>
+
+</div><!-- end top-row -->
+
+<!-- NOTIFICATION STRIP -->
+<div class="notif-strip">
+  <span class="ni">🔔</span>
+  <div class="nt">
+    <div>자동 알림 &amp; 스케줄링 <span style="background:rgba(255,255,255,0.2);border-radius:10px;padding:1px 8px;font-size:10px;margin-left:6px;">⚡ AUTO</span></div>
+    <span>GTM 전략 초안 완성 즉시 → 팀 Slack 노티스 자동 발송 · Google Calendar 리뷰 미팅 자동 등록 · Gmail 요약 리포트 발송</span>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+    <span class="ntag">💬 Slack</span>
+    <span class="ntag">📅 Google Calendar</span>
+    <span class="ntag">📧 Gmail</span>
+  </div>
+</div>
+
+<!-- PHASE 2 -->
+<div class="section-label">
+  <div class="sl-line"></div>
+  <div class="sl-text">📤 PHASE 2 · 업로드 &amp; 시각화 &amp; 배포</div>
+  <div class="sl-line"></div>
+</div>
+
+<div class="bottom-row">
+
+  <!-- STEP 4 -->
+  <div class="card c-orange">
+    <div class="icon-box" style="background:#fff7ed;">📤</div>
+    <div style="display:flex;align-items:center;">
+      <div class="card-num" style="background:#ea580c;">4</div>
+      <div class="card-title" style="margin:0 0 0 8px;">Coda.io 업로드</div>
+      <span class="auto-badge">⚡ 자동</span>
+    </div>
+    <div class="card-body" style="margin-top:6px;">
+      GTM 전략이 Coda.io에 <b>자동 저장</b>. 팀 전체 실시간 확인·편집 가능.
+    </div>
+    <div class="tags">
+      <span class="tag t-orange">📋 Coda.io API</span>
+      <span class="tag t-orange">🔄 실시간 동기화</span>
+      <span class="tag t-orange">👥 팀 공유</span>
+    </div>
+  </div>
+
+  <div class="arr">→</div>
+  <div class="arr-down">↓</div>
+
+  <!-- STEP 5 -->
+  <div class="card c-pink">
+    <div class="icon-box" style="background:#fdf2f8;">📊</div>
+    <div style="display:flex;align-items:center;">
+      <div class="card-num" style="background:#db2777;">5</div>
+      <div class="card-title" style="margin:0 0 0 8px;">시각화 자동 생성</div>
+      <span class="auto-badge">⚡ 자동</span>
+    </div>
+    <div class="card-body" style="margin-top:6px;">
+      분석 결과를 <b>인포그래픽</b> 또는 <b>프레젠테이션 슬라이드</b>로 자동 생성합니다.
+    </div>
+    <div class="tags">
+      <span class="tag t-pink">🎨 Claude Artifacts</span>
+      <span class="tag t-pink">📊 인포그래픽</span>
+      <span class="tag t-pink">🖥️ PPT 슬라이드</span>
+    </div>
+  </div>
+
+  <div class="arr">→</div>
+  <div class="arr-down">↓</div>
+
+  <!-- STEP 6 -->
+  <div class="card c-indigo">
+    <div class="icon-box" style="background:#eef2ff;">🌐</div>
+    <div style="display:flex;align-items:center;">
+      <div class="card-num" style="background:#4f46e5;">6</div>
+      <div class="card-title" style="margin:0 0 0 8px;">GitHub Pages 배포</div>
+    </div>
+    <div class="card-body" style="margin-top:6px;">
+      결과물을 GitHub에 push하면 <b>HTTPS URL</b>로 즉시 퍼블리싱. 누구나 링크로 접근 가능.
+    </div>
+    <div class="user-action">
+      <span class="ua-icon">👤</span>
+      <span><b>[사용자 액션 3]</b><br>git push 한 번으로 배포 완료</span>
+    </div>
+    <div class="tags">
+      <span class="tag t-indigo">🐙 GitHub</span>
+      <span class="tag t-indigo">🚀 GitHub Pages</span>
+      <span class="tag t-indigo">🔒 HTTPS 자동</span>
+    </div>
+  </div>
+
+  <div class="arr">→</div>
+  <div class="arr-down">↓</div>
+
+  <!-- STEP 7 -->
+  <div class="card c-yellow">
+    <div class="icon-box" style="background:#fffbeb;">🚀</div>
+    <div style="display:flex;align-items:center;">
+      <div class="card-num" style="background:#d97706;">7</div>
+      <div class="card-title" style="margin:0 0 0 8px;">맞춤 제안서 발송</div>
+      <span class="auto-badge">⚡ 자동</span>
+    </div>
+    <div class="card-body" style="margin-top:6px;">
+      고객별 <b>맞춤 제안서</b>·프로모션 슬라이드 자동 생성 후 팔로업 스케줄까지 자동 등록.
+    </div>
+    <div class="tags">
+      <span class="tag t-yellow">📝 맞춤 제안서</span>
+      <span class="tag t-yellow">🎯 프로모션</span>
+      <span class="tag t-yellow">📅 팔로업 자동</span>
+    </div>
+  </div>
+
+</div><!-- end bottom-row -->
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-title">📌 사용 도구 & 역할 요약</div>
+  <div class="legend-grid">
+    <div class="legend-item">🖱️ <b>Cursor / Claude Cowork / Antigravity</b> — AI Agent 실행 엔진</div>
+    <div class="legend-item">🧠 <b>Claude / GPT-4 LLM</b> — 분석·전략 수립</div>
+    <div class="legend-item">📋 <b>Coda.io</b> — 회의록 관리 &amp; 결과 저장</div>
+    <div class="legend-item">📁 <b>Google Workspace</b> — 제안서·자료 소스</div>
+    <div class="legend-item">🔔 <b>Slack / Gmail / Calendar</b> — 자동 알림·스케줄</div>
+    <div class="legend-item">🐙 <b>GitHub Pages</b> — HTTPS 무료 배포</div>
+    <div class="legend-item" style="color:#1d4ed8;">👤 <b>사용자 개입 3회</b> — 요청 / 검토·승인 / git push</div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:14px;font-size:11px;color:#94a3b8;letter-spacing:2px;font-weight:600;">
+  AI AGENT WORKFLOW · AUTOMATED END-TO-END · POWERED BY LLM
+</div>
+
+<!-- PAGE BREAK -->
+<div class="page-break" style="margin:48px 0 0;border-top:3px dashed #c7d2fe;padding-top:36px;">
+
+<!-- PAGE 2 HEADER -->
+<div style="text-align:center;margin-bottom:28px;">
+  <div style="font-size:11px;color:#7c3aed;font-weight:700;letter-spacing:2px;margin-bottom:8px;">PAGE 2 · REFLECTION &amp; INSIGHT</div>
+  <h2 style="font-size:clamp(20px,3.2vw,32px);font-weight:900;color:#1a1a2e;line-height:1.2;">AI는 이미 <span style="color:#7c3aed;">업무 현장</span>을 바꾸고 있다</h2>
+  <p style="font-size:13px;color:#64748b;margin-top:8px;font-weight:600;">단순 검색을 넘어 — 생산성 극대화의 새로운 패러다임</p>
+  <p style="font-size:14px;color:#7c3aed;margin-top:10px;font-weight:700;font-style:italic;">✍️ 스쳐 지나가는 나의 생각 정리</p>
+</div>
+
+<!-- HERO MESSAGE -->
+<div style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);border-radius:16px;padding:28px 24px;margin-bottom:20px;position:relative;overflow:hidden;">
+  <div style="position:absolute;top:-20px;right:-20px;font-size:100px;opacity:0.08;">🤖</div>
+  <div style="position:absolute;bottom:-10px;left:-10px;font-size:80px;opacity:0.06;">⚡</div>
+  <div class="hero-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;">
+    <div>
+      <div style="font-size:11px;color:#a5b4fc;font-weight:700;letter-spacing:2px;margin-bottom:10px;">OUR AI JOURNEY</div>
+      <div style="font-size:clamp(16px,2.5vw,22px);font-weight:900;color:#fff;line-height:1.4;margin-bottom:12px;">
+        대부분의 업무를<br><span style="color:#c4b5fd;">AI와 함께</span> 진행 중
+      </div>
+      <div style="font-size:12px;color:#c7d2fe;line-height:1.8;">
+        📊 자료 수집 &amp; 분석 정리<br>
+        💡 인사이트 도출<br>
+        🗺️ 향후 전략 수립<br>
+        🚀 자동화된 업무 플로우
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px 14px;">
+        <div style="font-size:10px;color:#a5b4fc;font-weight:700;letter-spacing:1px;margin-bottom:6px;">AI STACK</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;">
+          <span style="background:#7c3aed;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;">Claude</span>
+          <span style="background:#2563eb;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;">Gemini</span>
+          <span style="background:#0f766e;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;">Cursor</span>
+          <span style="background:#b45309;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;">Cowork</span>
+          <span style="background:#be185d;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;">Antigravity</span>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px 14px;">
+        <div style="font-size:10px;color:#a5b4fc;font-weight:700;letter-spacing:1px;margin-bottom:6px;">TOOLS CONNECTED</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;">
+          <span style="background:rgba(255,255,255,0.15);color:#e0e7ff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;">Google Workspace</span>
+          <span style="background:rgba(255,255,255,0.15);color:#e0e7ff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;">Coda.io</span>
+          <span style="background:rgba(255,255,255,0.15);color:#e0e7ff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;">Slack</span>
+          <span style="background:rgba(255,255,255,0.15);color:#e0e7ff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;">GitHub</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5 THOUGHTS -->
+<div style="font-size:11px;font-weight:900;color:#64748b;letter-spacing:2px;margin-bottom:12px;text-align:center;">💭 AI 시대, 스쳐 지나간 5가지 생각들</div>
+
+<div class="thought-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+
+  <!-- THOUGHT 1 -->
+  <div style="background:#fff;border:2px solid #fde68a;border-radius:14px;padding:16px;position:relative;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <div style="background:#f59e0b;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;">1</div>
+      <div style="font-size:13px;font-weight:900;color:#92400e;">Microsoft 도구 제로</div>
+    </div>
+    <div style="font-size:11px;color:#475569;line-height:1.7;">
+      Word, Excel, Teams… 일주일 내내 <b>단 한 번도 사용하지 않았다.</b> Google Workspace + AI 스택만으로 모든 업무가 돌아가는 시대가 이미 왔다.
+    </div>
+    <div style="margin-top:8px;display:flex;gap:5px;flex-wrap:wrap;">
+      <span style="background:#fffbeb;color:#b45309;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;border:1.5px solid #fde68a;">❌ Word</span>
+      <span style="background:#fffbeb;color:#b45309;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;border:1.5px solid #fde68a;">❌ Excel</span>
+      <span style="background:#fffbeb;color:#b45309;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;border:1.5px solid #fde68a;">❌ Teams</span>
+      <span style="background:#f0fdf4;color:#15803d;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;border:1.5px solid #86efac;">✅ Google</span>
+    </div>
+  </div>
+
+  <!-- THOUGHT 2 -->
+  <div style="background:#fff;border:2px solid #bfdbfe;border-radius:14px;padding:16px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <div style="background:#3b82f6;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;">2</div>
+      <div style="font-size:13px;font-weight:900;color:#1d4ed8;">네이버 0번 방문</div>
+    </div>
+    <div style="font-size:11px;color:#475569;line-height:1.7;">
+      일주일 동안 <b>네이버를 한 번도 열지 않았다.</b> 정보 탐색의 패러다임이 완전히 바뀌었다. 검색창 대신 AI에게 묻는 것이 이미 자연스러운 습관이 됐다.
+    </div>
+    <div style="margin-top:8px;background:#eff6ff;border-radius:8px;padding:6px 10px;font-size:11px;color:#1d4ed8;font-weight:700;">
+      🔍 검색 → 💬 AI 대화 로 완전 전환
+    </div>
+  </div>
+
+  <!-- THOUGHT 3 -->
+  <div style="background:#fff;border:2px solid #a7f3d0;border-radius:14px;padding:16px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <div style="background:#059669;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;">3</div>
+      <div style="font-size:13px;font-weight:900;color:#065f46;">AI 인프라 투자, 시작도 아니다</div>
+    </div>
+    <div style="font-size:11px;color:#475569;line-height:1.7;">
+      이 업무 하나에 AI가 <b>수백만 토큰</b>을 소모한다. 지금의 인프라 투자는 빙산의 일각. <b>"100배의 투자가 더 있을 것"</b>이라는 말이 과장이 아니다.
+    </div>
+    <div style="margin-top:8px;display:flex;align-items:center;gap:6px;">
+      <div style="flex:1;background:#f0fdf4;border-radius:8px;padding:5px 8px;font-size:10px;font-weight:700;color:#065f46;text-align:center;">현재 투자</div>
+      <div style="font-size:16px;color:#059669;">→→→</div>
+      <div style="flex:2;background:#059669;border-radius:8px;padding:5px 8px;font-size:10px;font-weight:700;color:#fff;text-align:center;">×100 예상 투자</div>
+    </div>
+  </div>
+
+  <!-- THOUGHT 4 -->
+  <div style="background:#fff;border:2px solid #fbcfe8;border-radius:14px;padding:16px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <div style="background:#db2777;color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;">4</div>
+      <div style="font-size:13px;font-weight:900;color:#9d174d;">중간 관리자의 미래</div>
+    </div>
+    <div style="font-size:11px;color:#475569;line-height:1.7;">
+      <b>의사결정자(임원) + 전문가(Specialist) + AI</b>만으로 돌아가는 조직 구조. 신입→대리→과장→부장으로 이어지는 전통적 계층의 의미가 흔들리고 있다.
+    </div>
+    <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap;">
+      <span style="background:#fdf2f8;color:#9d174d;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;border:1.5px solid #fbcfe8;">👔 임원 (결정)</span>
+      <span style="font-size:14px;display:flex;align-items:center;color:#94a3b8;">+</span>
+      <span style="background:#fdf2f8;color:#9d174d;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;border:1.5px solid #fbcfe8;">🔬 전문가</span>
+      <span style="font-size:14px;display:flex;align-items:center;color:#94a3b8;">+</span>
+      <span style="background:#7c3aed;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;">🤖 AI</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- THOUGHT 5 - FULL WIDTH HIGHLIGHT -->
+<div style="background:linear-gradient(135deg,#0f172a,#1e1b4b);border-radius:16px;padding:22px 24px;margin-bottom:20px;border:2px solid #4f46e5;">
+  <div class="thought5-grid" style="display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;">
+    <div style="text-align:center;">
+      <div style="background:#4f46e5;color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;margin:0 auto 8px;">5</div>
+      <div style="font-size:36px;">🤖</div>
+      <div style="font-size:11px;color:#a5b4fc;font-weight:700;margin-top:4px;">AI CEO</div>
+    </div>
+    <div>
+      <div style="font-size:13px;font-weight:900;color:#c7d2fe;margin-bottom:6px;">실제 사례 — AI 가상 임원이 CEO가 되다</div>
+      <div style="font-size:12px;color:#94a3b8;line-height:1.8;">
+        중국의 <b style="color:#fff;">넷드래곤 웹소프트(NetDragon Websoft)</b>는 <b style="color:#c4b5fd;">'탕유(Tang Yu)'</b>라는 AI 가상 임원을 <b style="color:#c4b5fd;">CEO로 임명</b>했다. 일상적인 비즈니스 예측, 성과 평가, 의사결정을 AI에게 맡긴 것. 이건 더 이상 SF 소설이 아니다.
+      </div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <span style="background:#4f46e5;color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px;">🏢 비즈니스 예측</span>
+        <span style="background:#4f46e5;color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px;">📊 성과 평가</span>
+        <span style="background:#4f46e5;color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px;">⚡ 실시간 의사결정</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLOSING MESSAGE -->
+<div style="background:#fff;border:2px solid #e2e8f0;border-radius:16px;padding:22px 24px;text-align:center;">
+  <div style="font-size:11px;color:#7c3aed;font-weight:700;letter-spacing:2px;margin-bottom:10px;">TAKEAWAY</div>
+  <div style="font-size:clamp(16px,2.5vw,22px);font-weight:900;color:#1a1a2e;line-height:1.4;margin-bottom:12px;">
+    AI는 도구가 아니라 <span style="color:#7c3aed;">동료</span>가 되고 있다
+  </div>
+  <div style="font-size:12px;color:#475569;line-height:1.8;max-width:600px;margin:0 auto 16px;">
+    회사도 적극 장려하고, 현장에서도 빠르게 확산되고 있다.<br>
+    지금 이 변화에 올라타는 것이 <b>가장 현명한 선택</b>이다.
+  </div>
+  <div class="takeaway-badges" style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+    <div style="background:#f5f3ff;border:2px solid #ddd6fe;border-radius:12px;padding:10px 18px;text-align:center;">
+      <div style="font-size:20px;margin-bottom:4px;">⚡</div>
+      <div style="font-size:12px;font-weight:900;color:#5b21b6;">생산성 극대화</div>
+    </div>
+    <div style="background:#f0fdf4;border:2px solid #a7f3d0;border-radius:12px;padding:10px 18px;text-align:center;">
+      <div style="font-size:20px;margin-bottom:4px;">🔄</div>
+      <div style="font-size:12px;font-weight:900;color:#065f46;">업무 자동화</div>
+    </div>
+    <div style="background:#eff6ff;border:2px solid #bfdbfe;border-radius:12px;padding:10px 18px;text-align:center;">
+      <div style="font-size:20px;margin-bottom:4px;">🚀</div>
+      <div style="font-size:12px;font-weight:900;color:#1d4ed8;">조직 혁신</div>
+    </div>
+    <div style="background:#fdf2f8;border:2px solid #fbcfe8;border-radius:12px;padding:10px 18px;text-align:center;">
+      <div style="font-size:20px;margin-bottom:4px;">🌍</div>
+      <div style="font-size:12px;font-weight:900;color:#9d174d;">패러다임 전환</div>
+    </div>
+  </div>
+
+  <!-- AI 상사 메시지 -->
+  <div style="background:linear-gradient(135deg,#1e1b4b,#4c1d95);border-radius:14px;padding:18px 20px;border:2px solid #7c3aed;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-10px;right:-10px;font-size:70px;opacity:0.07;">🤖</div>
+    <div class="ai-boss-flex" style="display:flex;align-items:flex-start;gap:14px;">
+      <!-- AI 상사 아바타 -->
+      <div style="flex-shrink:0;text-align:center;">
+        <div style="width:52px;height:52px;background:#7c3aed;border-radius:50%;border:3px solid #c4b5fd;display:flex;align-items:center;justify-content:center;font-size:26px;">🤖</div>
+        <div style="font-size:9px;color:#a5b4fc;font-weight:700;margin-top:4px;letter-spacing:1px;">AI 상사</div>
+      </div>
+      <!-- 말풍선 -->
+      <div class="ai-boss-bubble" style="flex:1;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:12px;border-top-left-radius:2px;padding:12px 16px;">
+        <div style="font-size:10px;color:#a5b4fc;font-weight:700;letter-spacing:1px;margin-bottom:6px;">📌 Coming Soon · 준비해야 할 것</div>
+        <div style="font-size:13px;font-weight:900;color:#fff;line-height:1.5;margin-bottom:8px;">
+          "곧 AI 상사의 지시가 내려올 것이다.<br>
+          <span style="color:#c4b5fd;">당신은 그 지시를 실행할 준비가 되어 있는가?"</span>
+        </div>
+        <div style="font-size:11px;color:#c7d2fe;line-height:1.8;">
+          AI가 분석하고 → AI가 전략을 수립하고 → AI가 지시를 내린다.<br>
+          우리에게 필요한 것은 <b style="color:#fff;">AI의 판단을 이해하고 실행하는 역량</b>.<br>
+          AI 리터러시(AI Literacy)가 곧 <b style="color:#fbbf24;">가장 중요한 업무 스킬</b>이 된다.
+        </div>
+        <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="background:rgba(124,58,237,0.4);color:#e0e7ff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;border:1px solid #7c3aed;">🧠 AI 리터러시</span>
+          <span style="background:rgba(124,58,237,0.4);color:#e0e7ff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;border:1px solid #7c3aed;">⚡ 실행력</span>
+          <span style="background:rgba(124,58,237,0.4);color:#e0e7ff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;border:1px solid #7c3aed;">🤝 AI와 협업</span>
+          <span style="background:rgba(251,191,36,0.2);color:#fbbf24;font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;border:1px solid #fbbf24;">🚨 지금 준비 시작</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end page 2 -->
+
+<div style="text-align:center;margin-top:20px;font-size:11px;color:#94a3b8;letter-spacing:2px;font-weight:600;">
+  AI AGENT WORKFLOW · AUTOMATED END-TO-END · POWERED BY LLM
+</div>
+
+</div>
+</body>
+</html>
