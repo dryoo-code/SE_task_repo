@@ -1,0 +1,43 @@
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches:
+      - main                  # main 브랜치 push → 프로덕션 배포
+  pull_request:
+    branches:
+      - main                  # PR 생성 → 미리보기 URL 자동 생성
+
+jobs:
+  # ── 프로덕션 배포 (main push) ──────────────────────────────────
+  deploy_production:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to Firebase (Production)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KR_SE_SPACE }}
+          projectId: kr-se-space
+          channelId: live
+
+  # ── PR 미리보기 배포 ────────────────────────────────────────────
+  deploy_preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy Preview to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KR_SE_SPACE }}
+          projectId: kr-se-space
+          # PR마다 고유한 미리보기 채널 자동 생성 (7일 후 만료)
+          expires: 7d

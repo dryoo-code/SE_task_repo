@@ -1,0 +1,36 @@
+{
+  "hosting": {
+    "public": ".",
+    "site": "kr-se-space",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      ".git/**",
+      ".github/**",
+      ".gitignore",
+      ".DS_Store",
+      "node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**/*.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(svg|ico|png|jpg|jpeg|gif|webp)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800"
+          }
+        ]
+      }
+    ],
+    "cleanUrls": false
+  }
+}
