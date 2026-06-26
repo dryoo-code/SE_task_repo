@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>놀유니버스 × Qualtrics XM — Experience Management 아웃라인</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMDRDOUNFIi8+PHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1jb2xvcj0iIzA3NjhERCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzVGMUFFNSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE0IiBmaWxsPSJ1cmwoI2cpIi8+PHRleHQgeD0iMzIiIHk9IjQzIiBmb250LWZhbWlseT0iQXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjEiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSIxIj5OT0w8L3RleHQ+PC9zdmc+Cg==" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+  :root{
+    --teal:#04C9CE; --sky:#00B4EE; --blue:#0768DD; --purple:#5F1AE5; --accent:#A54AF4;
+    --tlite:#BFF6F7; --amber:#FFD79A;
+    --ink:#15162A; --ink-soft:#3C4059; --ink-mut:#6C7290;
+    --w:#ffffff; --w86:rgba(255,255,255,.86); --w66:rgba(255,255,255,.66); --w50:rgba(255,255,255,.5);
+    --fr:rgba(255,255,255,.12); --fr2:rgba(255,255,255,.18); --dk:rgba(10,12,30,.30);
+    --bl:rgba(255,255,255,.30); --bl2:rgba(255,255,255,.18);
+    --grad:linear-gradient(120deg,#04C9CE 0%,#00B4EE 26%,#0768DD 58%,#5F1AE5 100%);
+    --grad-bar:linear-gradient(90deg,#04C9CE,#00B4EE,#0768DD,#5F1AE5);
+    --swoosh:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgNDAwIj48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNCRkY2RjciIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWRhc2hhcnJheT0iMyA3Ij48cGF0aCBkPSJNLTQwIDQyMCBDIDEyMCAzNjAsIDIwMCAyMzAsIDE4MCA2MCIvPjxwYXRoIGQ9Ik0tMTAgNDMwIEMgMTcwIDM3MCwgMjUwIDI0MCwgMjM1IDcwIi8+PHBhdGggZD0iTTIwIDQ0MCBDIDIyMCAzODAsIDMwMCAyNTAsIDI5MCA4NSIvPjxwYXRoIGQ9Ik01NSA0NTAgQyAyNzAgMzk1LCAzNTUgMjY1LCAzNDggMTAwIi8+PHBhdGggZD0iTTk1IDQ2MCBDIDMyMCA0MTAsIDQxMCAyODAsIDQwNSAxMjAiLz48cGF0aCBkPSJNMTQwIDQ3MCBDIDM3MCA0MjUsIDQ2MCAyOTUsIDQ1OCAxNDAiLz48L2c+PC9zdmc+Cg==");
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Noto Sans KR',sans-serif;color:var(--w);
+    background:radial-gradient(1000px 600px at 50% -10%,rgba(95,26,229,.25),transparent 60%),#0c0d1e;
+    padding:30px 16px 70px;-webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  .deck{width:100%;max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:30px;}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;}
+
+  .slide{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;container-type:size;
+    border-radius:16px;background:var(--grad);box-shadow:0 18px 55px rgba(6,7,25,.5);}
+  .slide::after{content:"";position:absolute;left:-5%;bottom:-10%;width:56%;height:80%;z-index:0;
+    background:var(--swoosh) no-repeat left bottom;background-size:contain;opacity:.18;pointer-events:none;}
+  .pad{position:absolute;inset:0;z-index:1;padding:7cqh 6cqw 5.5cqh;display:flex;flex-direction:column;}
+
+  /* header */
+  .head{display:flex;justify-content:space-between;align-items:center;gap:2cqw;}
+  .crumb{display:flex;align-items:center;}
+  .cr{background:rgba(255,255,255,.15);color:var(--w86);font:500 1.0cqw/1 'JetBrains Mono',monospace;letter-spacing:.03em;
+    padding:.95cqw 1.7cqw;clip-path:polygon(0 0,calc(100% - .75cqw) 0,100% 50%,calc(100% - .75cqw) 100%,0 100%);
+    margin-right:-.55cqw;white-space:nowrap;}
+  .cr.on{background:#fff;color:var(--purple);font-weight:500;}
+  .brand{display:flex;align-items:center;gap:.9cqw;}
+  .brand .nol{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.5);color:#fff;font-weight:900;
+    font-size:1.25cqw;padding:.5cqw .9cqw;border-radius:.55cqw;letter-spacing:.07em;}
+  .brand .plus{color:var(--w66);font-weight:600;font-size:1.35cqw;}
+  .brand .q{font-weight:800;font-size:1.55cqw;color:#fff;letter-spacing:-.01em;}
+  .brand .q sup{color:var(--tlite);font-size:.58em;font-weight:800;margin-left:.05em;}
+
+  .stitle{font-weight:900;color:#fff;letter-spacing:-.02em;line-height:1.15;font-size:3.6cqw;margin-top:3cqh;}
+  .stitle .g{color:var(--tlite);}
+  .pageno{position:absolute;right:2.4cqw;bottom:1.9cqh;font:500 .95cqw/1 'JetBrains Mono',monospace;color:var(--w66);}
+
+  /* cover / closing */
+  .cover .cobrand,.closing .eyebrow{margin:0;}
+  .cobrand{display:flex;align-items:center;gap:1cqw;}
+  .cobrand .nol{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.5);color:#fff;font-weight:900;
+    font-size:1.4cqw;padding:.55cqw 1cqw;border-radius:.6cqw;letter-spacing:.08em;}
+  .cobrand .plus{font-size:1.5cqw;color:var(--w66);}
+  .cobrand .q{font-weight:800;font-size:1.8cqw;color:#fff;}
+  .cobrand .q sup{font-size:.58em;color:var(--tlite);}
+  .eyebrow{font:500 1.15cqw/1 'JetBrains Mono',monospace;letter-spacing:.22em;color:var(--w86);text-transform:uppercase;margin-top:6cqh;}
+  .pad h1{color:#fff;font-weight:900;letter-spacing:-.02em;line-height:1.16;font-size:5cqw;margin-top:2.2cqh;}
+  .pad .sub{color:var(--w86);font-size:1.95cqw;font-weight:400;margin-top:2.4cqh;line-height:1.4;max-width:76%;}
+  .foot{position:absolute;left:7cqw;bottom:5cqh;font:500 1.0cqw/1 'JetBrains Mono',monospace;letter-spacing:.14em;color:var(--w66);}
+  .lua{display:flex;gap:1.1cqw;align-items:center;margin-top:3cqh;font:600 1.25cqw/1 'JetBrains Mono',monospace;color:#fff;letter-spacing:.06em;}
+  .lua .b{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);padding:.8cqw 1.4cqw;border-radius:99px;}
+  .lua .arw{color:var(--w66);}
+
+  /* S2 */
+  .ctx{display:flex;gap:3.5cqw;flex:1;align-items:center;margin-top:3cqh;}
+  .ctx-flow{flex:1.05;background:var(--fr);border:1px solid var(--bl);border-radius:1.4cqw;padding:3.4cqh 2.4cqw;text-align:center;}
+  .ctx-flow .lab{font:500 1.0cqw/1 'JetBrains Mono',monospace;letter-spacing:.1em;color:var(--w66);margin-bottom:2.4cqh;}
+  .chips{display:flex;flex-wrap:wrap;gap:.8cqw;justify-content:center;}
+  .chip{font-size:1.35cqw;font-weight:700;color:#fff;background:rgba(255,255,255,.14);border:1px solid var(--bl);border-radius:.7cqw;padding:.85cqw 1.2cqw;}
+  .merge{font-size:1.5cqw;color:#fff;font-weight:800;margin:1.8cqh 0;}
+  .merge small{display:block;font:500 .95cqw/1 'JetBrains Mono',monospace;letter-spacing:.1em;color:var(--w66);margin-bottom:.6cqh;}
+  .nolbig{display:inline-flex;align-items:center;gap:1.1cqw;background:#fff;color:var(--blue);font-weight:900;
+    font-size:2.6cqw;letter-spacing:.04em;padding:1.5cqh 3cqw;border-radius:1cqw;box-shadow:0 12px 30px rgba(6,7,25,.32);}
+  .nolbig small{font-size:1.0cqw;font-weight:500;color:var(--ink-mut);letter-spacing:.02em;}
+  .ctx-dir{flex:1;display:flex;flex-direction:column;gap:1.7cqh;}
+  .dir{display:flex;align-items:center;gap:1.4cqw;background:var(--fr);border:1px solid var(--bl2);border-left:.5cqw solid var(--c);border-radius:1cqw;padding:1.9cqh 1.8cqw;}
+  .dir .n{font:800 1.5cqw/1 'JetBrains Mono',monospace;color:#fff;}
+  .dir .t{font-size:1.65cqw;font-weight:700;color:#fff;line-height:1.25;}
+  .dir .t small{display:block;font-size:1.0cqw;font-weight:500;color:var(--w66);letter-spacing:.02em;margin-top:.3cqh;}
+
+  /* S3 mapping (4 rows) */
+  .maps{display:flex;flex-direction:column;gap:1.15cqh;flex:1;margin-top:2.4cqh;}
+  .map{display:grid;grid-template-columns:1fr 3.6cqw 1.55fr;align-items:stretch;}
+  .pain{background:var(--dk);border:1px solid var(--bl2);border-right:none;border-radius:.9cqw 0 0 .9cqw;padding:1.3cqh 1.5cqw;display:flex;flex-direction:column;justify-content:center;gap:.5cqh;}
+  .pain .k{font:600 .9cqw/1 'JetBrains Mono',monospace;letter-spacing:.08em;color:var(--amber);text-transform:uppercase;}
+  .pain p{font-size:1.42cqw;font-weight:600;color:#fff;line-height:1.32;}
+  .arrow{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border-top:1px solid var(--bl2);border-bottom:1px solid var(--bl2);}
+  .arrow svg{width:2.2cqw;height:2.2cqw;stroke:#fff;}
+  .sol{position:relative;background:var(--fr);border:1px solid var(--bl);border-radius:0 .9cqw .9cqw 0;padding:1.3cqh 1.7cqw;display:flex;flex-direction:column;justify-content:center;gap:.5cqh;overflow:hidden;}
+  .sol::before{content:"";position:absolute;left:0;top:0;bottom:0;width:.4cqw;background:var(--teal);}
+  .sol .nm{font-size:1.6cqw;font-weight:800;color:#fff;line-height:1.2;}
+  .sol .nm .badge{display:inline-block;font:600 .9cqw/1 'JetBrains Mono',monospace;color:var(--w86);background:rgba(255,255,255,.16);border:1px solid var(--bl);border-radius:.5cqw;padding:.42cqw .7cqw;margin-left:.55cqw;vertical-align:middle;letter-spacing:.02em;}
+  .sol .one{font-size:1.22cqw;font-weight:700;color:#fff;display:flex;gap:.55cqw;align-items:center;}
+  .sol .one::before{content:"➜";color:var(--tlite);}
+  .sol .cl{font-size:1.13cqw;font-weight:600;color:var(--tlite);display:flex;gap:.5cqw;align-items:center;}
+
+  /* S4 journey */
+  .jwrap{flex:1;display:flex;flex-direction:column;justify-content:center;margin-top:1cqh;}
+  .jstages{position:relative;display:flex;}
+  .jstages::before{content:"";position:absolute;left:9%;right:9%;top:11.9cqw;height:.4cqw;background:rgba(255,255,255,.55);border-radius:.4cqw;z-index:0;}
+  .jstage{flex:1;position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 .7cqw;}
+  .jstage .jn-name{height:8cqw;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
+  .jn-name b{font-size:1.6cqw;font-weight:800;color:#fff;line-height:1.2;}
+  .jn-name small{font:500 .92cqw/1 'JetBrains Mono',monospace;color:var(--w50);margin-top:.5cqh;letter-spacing:.03em;}
+  .jnode{width:5.4cqw;height:5.4cqw;border-radius:50%;margin:1.4cqw 0;display:flex;align-items:center;justify-content:center;
+    background:#fff;border:.4cqw solid var(--c);color:var(--c);font:600 1.5cqw/1 'JetBrains Mono',monospace;box-shadow:0 6px 18px rgba(6,7,25,.32);}
+  .jtags{font-size:1.18cqw;color:var(--w86);line-height:1.45;}
+  .jtags b{color:#fff;font-weight:700;}
+  .aibar{margin-top:3.2cqh;display:flex;align-items:center;gap:1.4cqw;background:var(--fr);border:1px solid var(--bl2);border-radius:1cqw;padding:1.6cqh 1.8cqw;}
+  .aibar .pill{font:800 1.0cqw/1 'JetBrains Mono',monospace;letter-spacing:.08em;color:var(--purple);background:#fff;padding:.75cqw 1.2cqw;border-radius:99px;white-space:nowrap;}
+  .aibar .txt{font-size:1.3cqw;color:var(--w86);}
+  .aibar .txt b{color:#fff;font-weight:700;}
+
+  /* S5 omnichannel */
+  .omni{display:grid;grid-template-columns:1.15fr auto .85fr;gap:2.4cqw;align-items:center;flex:1;margin-top:2.4cqh;}
+  .sources{display:flex;flex-direction:column;gap:1.3cqh;}
+  .src{display:flex;align-items:center;gap:1.2cqw;background:var(--fr);border:1px solid var(--bl2);border-radius:.9cqw;padding:1.35cqh 1.5cqw;}
+  .src .ic{width:3cqw;height:3cqw;border-radius:.7cqw;flex:none;display:flex;align-items:center;justify-content:center;background:var(--cc);}
+  .src .ic svg{width:1.7cqw;height:1.7cqw;stroke:#fff;}
+  .src .tx b{font-size:1.45cqw;font-weight:700;color:#fff;}
+  .src .tx span{display:block;font-size:1.08cqw;color:var(--w66);margin-top:.2cqh;}
+  .omni-mid{display:flex;align-items:center;justify-content:center;}
+  .omni-mid svg{width:3.2cqw;height:3.2cqw;stroke:#fff;}
+  .unify{background:#fff;border-radius:1.3cqw;padding:3cqh 2cqw;text-align:center;box-shadow:0 12px 30px rgba(6,7,25,.32);}
+  .unify .big{font-size:2cqw;font-weight:900;line-height:1.2;color:var(--blue);}
+  .unify .small{font-size:1.2cqw;color:var(--ink-mut);margin-top:1cqh;line-height:1.4;}
+  .spotlight{margin-top:2cqh;background:rgba(10,12,30,.42);border:1px solid var(--bl2);border-radius:1cqw;padding:1.8cqh 2cqw;display:flex;align-items:center;gap:1.6cqw;}
+  .spotlight .tag{font:800 1.0cqw/1 'JetBrains Mono',monospace;letter-spacing:.06em;color:#0c0d1e;background:var(--grad-bar);padding:.8cqw 1.2cqw;border-radius:99px;white-space:nowrap;}
+  .spotlight .t{color:#fff;font-size:1.32cqw;line-height:1.4;}
+  .spotlight .t b{color:var(--tlite);font-weight:700;}
+
+  /* S6 personalization */
+  .pers{display:grid;grid-template-columns:1fr auto 1fr auto 1.05fr;align-items:center;gap:1.6cqw;flex:1;margin-top:2.6cqh;}
+  .pcol{display:flex;flex-direction:column;gap:1.1cqh;}
+  .pcard{background:var(--fr);border:1px solid var(--bl2);border-radius:.9cqw;padding:1.4cqh 1.4cqw;border-top:.45cqw solid var(--c);}
+  .pcard b{font-size:1.4cqw;font-weight:800;color:#fff;}
+  .pcard small{display:block;font-size:1.05cqw;color:var(--w66);margin-top:.25cqh;line-height:1.35;}
+  .pmid{display:flex;align-items:center;justify-content:center;color:var(--w50);font-size:2.4cqw;font-weight:300;}
+  .pcenter{background:#fff;border-radius:1.2cqw;padding:2.4cqh 1.6cqw;text-align:center;box-shadow:0 12px 30px rgba(6,7,25,.32);}
+  .pcenter .big{font-size:1.7cqw;font-weight:900;color:var(--ink);line-height:1.25;}
+  .pcenter .small{font-size:1.1cqw;color:var(--ink-mut);margin-top:.9cqh;line-height:1.4;}
+  .pact{display:flex;flex-direction:column;gap:1.0cqh;}
+  .pact .a{display:flex;gap:.9cqw;align-items:flex-start;font-size:1.32cqw;color:var(--w86);line-height:1.3;}
+  .pact .a::before{content:"";width:.85cqw;height:.85cqw;border-radius:50%;background:#fff;flex:none;margin-top:.55cqh;}
+  .pact .a b{color:#fff;font-weight:700;}
+
+  /* S7 proof */
+  .proof{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.8cqw;flex:1;margin-top:2.8cqh;}
+  .pcard2{background:var(--fr);border:1px solid var(--bl);border-radius:1.2cqw;padding:2.4cqh 1.8cqw;display:flex;flex-direction:column;gap:1cqh;}
+  .pcard2 .co{font-size:2cqw;font-weight:900;color:#fff;letter-spacing:-.01em;}
+  .pcard2 .use{font:600 1.0cqw/1.2 'JetBrains Mono',monospace;color:var(--tlite);letter-spacing:.02em;}
+  .pcard2 ul{list-style:none;display:flex;flex-direction:column;gap:.85cqh;margin-top:.4cqh;}
+  .pcard2 li{font-size:1.28cqw;color:var(--w86);line-height:1.35;padding-left:1.5cqw;position:relative;}
+  .pcard2 li::before{content:"";position:absolute;left:0;top:.55cqh;width:.7cqw;height:.7cqw;border-radius:50%;background:var(--tlite);}
+  .proofsrc{font-size:1.1cqw;color:var(--w66);margin-top:1.8cqh;}
+
+  /* S8 sources */
+  .srcblk{position:absolute;left:7cqw;right:7cqw;bottom:4.5cqh;}
+  .srcblk .h{font:500 1.0cqw/1 'JetBrains Mono',monospace;letter-spacing:.16em;color:var(--w66);text-transform:uppercase;margin-bottom:1.2cqh;}
+  .srcblk p{font-size:1.05cqw;color:var(--w86);line-height:1.55;}
+  .srcblk p b{color:#fff;font-weight:600;}
+
+  .cap{max-width:1240px;margin:6px auto 0;color:#aeb3c6;font-size:12.5px;text-align:center;line-height:1.6;}
+  .cap b{color:#dfe2ee;}
+
+  @media print{
+    @page{size:1280px 720px;margin:0;}
+    body{background:#fff;padding:0;}
+    .deck{gap:0;max-width:none;}
+    .slide{border-radius:0;box-shadow:none;break-after:page;page-break-after:always;}
+    .cap{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- S1 COVER -->
+  <section class="slide cover">
+    <div class="pad">
+      <div class="cobrand"><span class="nol">NOL 놀유니버스</span><span class="plus">+</span><span class="q">qualtrics<sup>XM</sup></span></div>
+      <div class="eyebrow">Experience Management · 솔루션 아웃라인</div>
+      <h1>끊김 없는 AI 여행 경험은,<br/>끊김 없는 고객 경험 데이터로.</h1>
+      <div class="sub">NOL 통합 여정 전체를 보고 · 듣고 · 개선하는 Qualtrics XM</div>
+      <div class="foot">NOL UNIVERSE · IQM 2026</div>
+    </div>
+    <div class="pageno">01</div>
+  </section>
+
+  <!-- S2 CONTEXT -->
+  <section class="slide">
+    <div class="pad">
+      <div class="head">
+        <div class="crumb"><span class="cr">놀유니버스</span><span class="cr on">현황 &amp; 방향</span></div>
+        <div class="brand"><span class="nol">NOL</span><span class="plus">+</span><span class="q">qualtrics<sup>XM</sup></span></div>
+      </div>
+      <div class="stitle">분산된 경험에서, <span class="g">하나의 NOL 경험</span>으로</div>
+      <div class="ctx">
+        <div class="ctx-flow">
+          <div class="lab">CURRENT&nbsp;&nbsp;→&nbsp;&nbsp;2026.09 통합</div>
+          <div class="chips">
+            <span class="chip">NOL 인터파크투어</span>
+            <span class="chip">NOL 티켓</span>
+            <span class="chip">트리플</span>
+          </div>
+          <div class="merge"><small>UNIFY</small>▼</div>
+          <div class="nolbig">NOL <small>하나의 앱 · 하나의 경험</small></div>
+        </div>
+        <div class="ctx-dir">
+          <div class="dir" style="--c:var(--teal)"><span class="n">1</span><div class="t">초개인화 (Hyper-personalization)<small>선호를 기억하는 AI 여행 경험</small></div></div>
+          <div class="dir" style="--c:var(--sky)"><span class="n">2</span><div class="t">단일 플랫폼 통합<small>9월 NOL 통합 · 트리플 순차 결합</small></div></div>
+          <div class="dir" style="--c:var(--accent)"><span class="n">3</span><div class="t">글로벌 ATA 도약<small>AI Travel Agency 비전</small></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="pageno">02</div>
+  </section>
+
+  <!-- S3 MAPPING -->
+  <section class="slide">
+    <div class="pad">
+      <div class="head">
+        <div class="crumb"><span class="cr">놀유니버스</span><span class="cr on">고민 → 솔루션</span></div>
+        <div class="brand"><span class="nol">NOL</span><span class="plus">+</span><span class="q">qualtrics<sup>XM</sup></span></div>
+      </div>
+      <div class="stitle">각 고민에 맞는 <span class="g">Qualtrics 솔루션</span></div>
+      <div class="maps">
+        <div class="map">
+          <div class="pain"><div class="k">통합 · 측정</div><p>접점·VoC가 여러 앱에 분산<br/>통합 시 측정할 공통 축이 없음</p></div>
+          <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4"><path d="M4 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="sol">
+            <div class="nm">Omnichannel Experience Management <span class="badge">XM for CX</span></div>
+            <div class="one">흩어진 신호를 하나의 NOL 여정으로 · 접점별 NPS/CSAT</div>
+            <div class="cl">⟳ Closed-loop으로 사후 액션까지 시스템화·자동화</div>
+          </div>
+        </div>
+        <div class="map">
+          <div class="pain"><div class="k">원인 · 행동</div><p>NPS는 있으나 ‘왜·행동’이 없음<br/>디지털 이탈·마찰이 안 보임</p></div>
+          <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4"><path d="M4 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="sol">
+            <div class="nm">Frontline Digital™ <span class="badge">XM for CX</span></div>
+            <div class="one">세션 리플레이 · 이탈 신호 자동 감지 · 실시간 개입</div>
+            <div class="cl">⟳ Closed-loop으로 감지→대응을 시스템화·자동화</div>
+          </div>
+        </div>
+        <div class="map">
+          <div class="pain"><div class="k">출시 · 검증</div><p>9월 통합 앱·AI 에이전트<br/>출시 전 검증 체계가 필요</p></div>
+          <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4"><path d="M4 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="sol">
+            <div class="nm">User Experience Research <span class="badge">XM for Strategy &amp; Research</span></div>
+            <div class="one">프로토타입·라이브 앱 사용성 테스트 (Moderated/Unmoderated) · Mobile UX</div>
+          </div>
+        </div>
+        <div class="map">
+          <div class="pain"><div class="k">점검 · 지속</div><p>마케팅·CX 활동의 효과를<br/>지속적으로 점검할 방법 필요</p></div>
+          <div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4"><path d="M4 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="sol">
+            <div class="nm">Brand Tracking <span class="badge">XM for Strategy &amp; Research</span></div>
+            <div class="one">월단위 지속 브랜드 트래킹으로 마케팅·CX 활동 점검 · 지속 리서치</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pageno">03</div>
+  </section>
+
+  <!-- S4 JOURNEY -->
+  <section class="slide">
+    <div class="pad">
+      <div class="head">
+        <div class="crumb"><span class="cr">놀유니버스</span><span class="cr on">End-to-end 여정</span></div>
+        <div class="brand"><span class="nol">NOL</span><span class="plus">+</span><span class="q">qualtrics<sup>XM</sup></span></div>
+      </div>
+      <div class="stitle">영감부터 재방문까지, <span class="g">하나의 경험 데이터</span></div>
+      <div class="jwrap">
+        <div class="jstages">
+          <div class="jstage">
+            <div class="jn-name"><b>영감·탐색</b><small>Discover</small></div>
+            <div class="jnode" style="--c:var(--teal)">01</div>
+            <div class="jtags"><b>Frontline Digital™</b><br/>탐색·이탈 신호</div>
+          </div>
+          <div class="jstage">
+            <div class="jn-name"><b>예약</b><small>항공·숙박·티켓</small></div>
+            <div class="jnode" style="--c:var(--sky)">02</div>
+            <div class="jtags"><b>Omnichannel XM</b><br/>접점별 NPS·피드백</div>
+          </div>
+          <div class="jstage">
+            <div class="jn-name"><b>여행 전</b><small>Pre-trip</small></div>
+            <div class="jnode" style="--c:var(--blue)">03</div>
+            <div class="jtags"><b>UX Research</b><br/>AI 에이전트 검증</div>
+          </div>
+          <div class="jstage">
+            <div class="jn-name"><b>여행 중</b><small>공연·이동·대응</small></div>
+            <div class="jnode" style="--c:var(--purple)">04</div>
+            <div class="jtags"><b>Omnichannel XM</b><br/>온·오프라인 실시간</div>
+          </div>
+          <div class="jstage">
+            <div class="jn-name"><b>여행 후·재방문</b><small>Return</small></div>
+            <div class="jnode" style="--c:var(--accent)">05</div>
+            <div class="jtags"><b>재방문 동인 분석</b><br/>Automated Text Analytics</div>
+          </div>
+        </div>
+        <div class="aibar">
+          <span class="pill">AI 필수 탑재</span>
+          <span class="txt">여정 전 구간에 <b>Experience Agents™ · Automated Text Analytics · Predictive Intelligence · AI-powered Summaries</b>가 함께 작동</span>
+        </div>
+      </div>
+    </div>
+    <div class="pageno">04</div>
+  </section>
+
+  <!-- S5 OMNICHANNEL -->
+  <section class="slide">
+    <div class="pad">
+      <div class="head">
+        <div class="crumb"><span class="cr">놀유니버스</span><span class="cr on">Omnichannel Listening</span></div>
+        <div class="brand"><span class="nol">NOL</span><span class="plus">+</span><span class="q">qualtrics<sup>XM</sup></span></div>
+      </div>
+      <div class="stitle">설문을 넘어, <span class="g">모든 채널의 소리</span>를 하나로</div>
+      <div class="omni">
+        <div class="sources">
+          <div class="src"><span class="ic" style="--cc:var(--teal)"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="tx"><b>직접 피드백</b><span>설문 · NPS / CSAT</span></div></div>
+          <div class="src"><span class="ic" style="--cc:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4" stroke-linecap="round"/></svg></span><div class="tx"><b>디지털 행동</b><span>웹·앱 · Frontline Digital™</span></div></div>
+          <div class="src"><span class="ic" style="--cc:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16v12H5.2L4 17.2z" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="tx"><b>콜·챗·소셜·리뷰</b><span>비정형 데이터 (다국어)</span></div></div>
+          <div class="src"><span class="ic" style="--cc:var(--purple)"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg></span><div class="tx"><b>오프라인 접점</b><span>체크인 · 공연장</span></div></div>
+        </div>
+        <div class="omni-mid"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4"><path d="M4 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="unify">
+          <div class="big">하나의<br/>통합 여정</div>
+          <div class="small">360° 고객 프로필<br/>접점별 NPS·동인</div>
+        </div>
+      </div>
+      <div class="spotlight">
+        <span class="tag">Automated Text Analytics</span>
+        <div class="t">다국어 인입을 <b>자동으로 토픽·감성 분류하고 시각화</b> — 수작업 룰 없이, 글로벌 확장 시에도 언어 장벽 없는 분석</div>
+      </div>
+    </div>
+    <div class="pageno">05</div>
+  </section>
+
+  <!-- S6 PERSONALIZATION -->
+  <section class="slide">
+    <div class="pad">
+      <div class="head">
+        <div class="crumb"><span class="cr">놀유니버스</span><span class="cr on">초개인화</span></div>
+        <div class="brand"><span class="nol">NOL</span><span class="plus">+</span><span class="q">qualtrics<sup>XM</sup></span></div>
+      </div>
+      <div class="stitle">초개인화를, <span class="g">규모 있게</span></div>
+      <div class="pers">
+        <div class="pcol">
+          <div class="pcard" style="--c:var(--teal)"><b>직접</b><small>설문에서 말한 것</small></div>
+          <div class="pcard" style="--c:var(--sky)"><b>추론</b><small>행동으로 드러난 것</small></div>
+          <div class="pcard" style="--c:var(--blue)"><b>간접</b><small>대화에서 읽히는 것</small></div>
+        </div>
+        <div class="pmid">+</div>
+        <div class="pcenter">
+          <div class="big">통합 고객 이해</div>
+          <div class="small">360° 프로필 · Experience Memory<br/>(선호를 기억)</div>
+        </div>
+        <div class="pmid">→</div>
+        <div class="pact">
+          <div class="a"><b>실시간 개인화</b> — 다음 여정 추천</div>
+          <div class="a"><b>이탈 예측</b> &amp; 다음 best action</div>
+          <div class="a">프론트라인 <b>응대 추천</b></div>
+          <div class="a">개인화 <b>캠페인·재방문 유도</b></div>
+        </div>
+      </div>
+      <div class="aibar" style="margin-top:2.6cqh;">
+        <span class="pill">Qualtrics AI</span>
+        <span class="txt"><b>Experience Agents™ · Predictive Intelligence · AI-powered Summaries</b> — 이해를 행동과 개인화로 자동 연결</span>
+      </div>
+    </div>
+    <div class="pageno">06</div>
+  </section>
+
+  <!-- S7 PROOF -->
+  <section class="slide">
+    <div class="pad">
+      <div class="head">
+        <div class="crumb"><span class="cr">놀유니버스</span><span class="cr on">고객 사례</span></div>
+        <div class="brand"><span class="nol">NOL</span><span class="plus">+</span><span class="q">qualtrics<sup>XM</sup></span></div>
+      </div>
+      <div class="stitle">글로벌 기업들이 <span class="g">Qualtrics로 만든 변화</span></div>
+      <div class="proof">
+        <div class="pcard2">
+          <div class="co">Inspire Brands</div>
+          <div class="use">통합 · 차별화 CX</div>
+          <ul>
+            <li>여러 레거시 솔루션을 Qualtrics로 통합</li>
+            <li>가맹점·임원 재참여, 프로그램 신뢰 회복</li>
+            <li>“유일무이한 경험”을 만드는 단일 파트너</li>
+          </ul>
+        </div>
+        <div class="pcard2">
+          <div class="co">Adobe</div>
+          <div class="use">비정형 분석 · 셀프서비스</div>
+          <ul>
+            <li>챗·콜·커뮤니티·인앱 피드백 통합 분석</li>
+            <li>셀프서비스 전환으로 응대 비용 절감</li>
+            <li>리뷰·콜·사용 데이터로 로드맵 반영</li>
+          </ul>
+        </div>
+        <div class="pcard2">
+          <div class="co">Apple</div>
+          <div class="use">실시간 CX · 제품 검증</div>
+          <ul>
+            <li>고객 피드백 실시간 분석, 장애 조기 감지</li>
+            <li>제품 테스트·디자인을 데이터로 최적화</li>
+            <li>브랜드 인식 개선</li>
+          </ul>
+        </div>
+      </div>
+      <div class="proofsrc">출처: Qualtrics 고객 레퍼런스 (Executive Briefing 자료)</div>
+    </div>
+    <div class="pageno">07</div>
+  </section>
+
+  <!-- S8 CLOSING -->
+  <section class="slide closing">
+    <div class="pad">
+      <div class="eyebrow" style="margin-top:2cqh;">Listen → Understand → Act</div>
+      <h1 style="font-size:4.2cqw;">끊김 없는 AI 여행 경험은,<br/>끊김 없는 고객 경험 데이터 위에서.</h1>
+      <div class="lua">
+        <span class="b">LISTEN</span><span class="arw">→</span>
+        <span class="b">UNDERSTAND</span><span class="arw">→</span>
+        <span class="b">ACT</span>
+      </div>
+    </div>
+    <div class="srcblk">
+      <div class="h">출처 · References</div>
+      <p>· 서울경제 「AI로 온라인 여행플랫폼 재편…글로벌 ‘ATA’ 선두되겠다」 (<b>이철웅 놀유니버스 대표 인터뷰</b>, 2026.06.17) · 놀유니버스 서비스 안내(첨부)<br/>
+      · Qualtrics 제품: <b>Qualtrics Feature Readiness Guide Q1 2026</b> 및 제품 참조 문서 — Omnichannel Experience Management · Frontline Digital™ · User Experience Research · Brand Tracking · Automated Text Analytics · Experience Agents™ · Predictive Intelligence · AI-powered Summaries · Strategy &amp; Research<br/>
+      · 고객 사례 / 슬라이드 구성: <b>Qualtrics 고객 레퍼런스 및 Executive Briefing 자료</b> · 디자인: Qualtrics 공식 슬라이드 템플릿<br/>
+      · 본 자료는 솔루션 이해용 <b>아웃라인</b>이며, 정확한 기능·요건·적용 범위는 별도 확인이 필요합니다. 가격·라이선스는 영업 담당자와 협의합니다.</p>
+    </div>
+    <div class="pageno">08</div>
+  </section>
+
+</div>
+<div class="cap">16:9 발표용 슬라이드 · 브라우저에서 <b>인쇄 → PDF로 저장</b> 시 각 슬라이드가 한 페이지로 출력됩니다.</div>
+</body>
+</html>
